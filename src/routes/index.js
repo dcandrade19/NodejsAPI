@@ -6,7 +6,7 @@ const router = express.Router();
 // configurando primeira rota
 router.get('/', (req, res, next) => {
     res.status(200).send({
-        title: "Node Store API",
+        title: "Funcionarios API",
         version: "0.0.2"
     });
 });

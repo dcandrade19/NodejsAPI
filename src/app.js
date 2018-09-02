@@ -7,12 +7,14 @@ const app = express();
 
 // Carregar as Rotas
 const index = require('./routes/index');
-const product = require('./routes/product');
+const funcionarioRoute = require('./routes/funcionario-route');
+const usuarioRoute = require('./routes/usuario-route');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/', index);
-app.use('/products', product);
+app.use('/funcionarios', funcionarioRoute);
+app.use('/usuarios', usuarioRoute);
 
 module.exports = app;
