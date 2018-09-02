@@ -4,7 +4,10 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/funcionario-controller');
 const autenticacao = require('../services/autenticacao-service');
+const app = express()
+const cors = require('cors')
 
+app.use(cors())
 // autenticacao.authorize
 
 // configurando rota post create
