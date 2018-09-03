@@ -5,6 +5,11 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+const cors = require('cors');
+
+// use it before all route definitions
+app.use(cors({origin: '*'}));
+
 // Carregar as Rotas
 const index = require('./routes/index');
 const funcionarioRoute = require('./routes/funcionario-route');
