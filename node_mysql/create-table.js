@@ -1,43 +1,70 @@
 'use strict'
 // Sql
-const sqlUsuarios = "CREATE TABLE IF NOT EXISTS Usuarios (\n" +
-"ID int NOT NULL AUTO_INCREMENT, \n" +
-"Login varchar(150) NOT NULL, \n" +
-"Senha varchar(20) NOT NULL, \n" +
+const sqlUsuarios = "CREATE TABLE IF NOT EXISTS usuarios (\n" +
+"id int NOT NULL AUTO_INCREMENT, \n" +
+"nome varchar(150) NOT NULL, \n" +
+"email varchar(255) NOT NULL, \n" +
+"login varchar(80) NOT NULL, \n" +
+"senha char(32) NOT NULL, \n" +
+"createdAt date DEFAULT NULL, \n" +
+"updatedAt date DEFAULT NULL, \n" +
+"PRIMARY KEY (id) \n" +
+");";
+const sqlFuncionarios = "CREATE TABLE IF NOT EXISTS funcionarios (\n" +
+"id int NOT NULL AUTO_INCREMENT, \n" +
+"nome varchar(150) NOT NULL, \n" +
+"cpf char(14) NOT NULL, \n" +
+"setor varchar(80) NOT NULL, \n" +
+"datacontratacao date NOT NULL, \n" +
+"createdAt date DEFAULT NULL, \n" +
+"updatedAt date DEFAULT NULL, \n" +
 "PRIMARY KEY (ID) \n" +
 ");";
-const sqlFuncionarios = "CREATE TABLE IF NOT EXISTS Funcionarios (\n" +
-"ID int NOT NULL AUTO_INCREMENT, \n" +
-"Nome varchar(150) NOT NULL, \n" +
-"CPF char(11) NOT NULL, \n" +
-"PRIMARY KEY (ID) \n" +
-");";
+
+const insertFunc = "INSERT INTO funcionarios (\n" +
+"nome, \n" +
+"cpf, \n" +
+"setor, \n" +
+"datacontratacao) \n" +
+"VALUES \n" +
+"('Joao da Silva', \n" +
+"'123.456.456-45', \n" +
+"'Juridico', \n" +
+"'2018-01-03'), \n" +
+"('Maria da Silva', \n" +
+"'992.888.111-45', \n" +
+"'TI', \n" +
+"'2018-05-04'), \n" +
+"('Manoel da Silva', \n" +
+"'777.222.456-45', \n" +
+"'Financeiro', \n" +
+"'2016-03-03');";
+
 // Require do mysql
-const mysql = require('mysql');
+const config = require('../src/config');
+const sequelize = require('sequelize');
 
-// Criando conexão com a base
-const connection = mysql.createConnection({
-    host : 'localhost',
-    port : 3306,
-    user : 'root',
-    password : '',
-    database : 'dbestagio'
-});
+const connection = new sequelize("", config.user, config.password, {
+    host: config.host,
+    dialect: config.dialect
+  });
 
-// Verificando conexão
-connection.connect(function(erro){
-    if(erro) return console.log(erro);
-    console.log('Connectado ao Banco.');
-    createTable(connection,sqlUsuarios);
-    createTable(connection,sqlFuncionarios);
-});
-
-// Criar tabela 'if not exists'
-function createTable(conn, sqlString) {
-    const sql = sqlString;
+  async function create() {
+    const res = await connection.query("CREATE DATABASE IF NOT EXISTS `"+ config.database +"`;");
+    if(res){
+        const connectionnew = await new sequelize(config.database, config.user, config.password, {
+            host: config.host,
+            dialect: config.dialect
+          });
     
-    conn.query(sql, function (error, results, fields){
-        if(error) return console.log(error);
-        console.log('Tabela criada.');
-    });
+    // Verificando conexão
+    await connectionnew.query(sqlUsuarios);
+    
+    await connectionnew.query(sqlFuncionarios);
+
+    await connectionnew.query(insertFunc);
+    } 
 }
+
+create();
+// Criando base
